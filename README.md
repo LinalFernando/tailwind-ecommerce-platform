@@ -3,7 +3,7 @@
   
   <br />
 
-  # 🌿 Heritage Nature Organics
+  # 🌿 Heritage Nature Organics 🌿
   
   **A Next-Generation E-Commerce Experience Powered by Google Gemini AI**
 
