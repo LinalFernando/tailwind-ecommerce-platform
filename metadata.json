@@ -1,0 +1,8 @@
+{
+  "name": "Heritage Organics",
+  "description": "Premium organic e-commerce store featuring AI-powered product analysis, smart search, and marketing tools.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
