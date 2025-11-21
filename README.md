@@ -111,3 +111,35 @@ const response = await ai.models.generateContent({
     ]
   }
 });
+```
+### 2. Search Grounding (/assistant)
+To ensure answers are factual, we use the Google Search Tool.
+```typescript
+const response = await ai.models.generateImages({
+  model: 'imagen-4.0-generate-001',
+  prompt: userPrompt,
+  config: { aspectRatio: '1:1' }
+});
+```
+### 3. Image Generation (/studio)
+We integrate Imagen 4 to generate marketing assets on the fly.
+```typescript
+const response = await ai.models.generateImages({
+  model: 'imagen-4.0-generate-001',
+  prompt: userPrompt,
+  config: { aspectRatio: '1:1' }
+});
+```
+
+## 🎨 UI/UX Highlights
+* **Glassmorphism & Gradients:** A modern aesthetic using backdrop blur and subtle organic gradients.
+* **Micro-interactions:** Smooth transitions, hover effects, and loading states using pure CSS animations.
+* **Responsive Design:** Fully optimized for mobile, tablet, and desktop experiences.
+
+## 📄 License
+Distributed under the MIT License. See LICENSE for more information.
+
+
+<div align="center">
+<p>Made with 💚 by Linal Fernando</p>
+</div>
