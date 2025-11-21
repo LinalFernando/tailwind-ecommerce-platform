@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { CartItem } from '../types';
 import { Trash2, Plus, Minus, ArrowRight, ShoppingBag, CreditCard, CheckCircle, Lock, ChevronLeft, ShieldCheck, Truck, MapPin, X } from 'lucide-react';
@@ -37,6 +36,31 @@ export const Cart: React.FC<CartProps> = ({ cart, updateQuantity, removeFromCart
         name: ''
     });
 
+    const [errors, setErrors] = useState<Record<string, string>>({});
+
+    const validateShipping = () => {
+        const newErrors: Record<string, string> = {};
+        if (shippingDetails.fullName.length < 2) newErrors.fullName = 'Name must be at least 2 characters';
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(shippingDetails.email)) newErrors.email = 'Invalid email address';
+        if (shippingDetails.address.length < 5) newErrors.address = 'Address is too short';
+        if (!shippingDetails.city) newErrors.city = 'City is required';
+        if (!/^\d+$/.test(shippingDetails.zip)) newErrors.zip = 'Invalid ZIP code';
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const validatePayment = () => {
+        const newErrors: Record<string, string> = {};
+        if (cardDetails.number.replace(/\s/g, '').length !== 16) newErrors.number = 'Card number must be 16 digits';
+        if (!/^\d{2}\/\d{2}$/.test(cardDetails.expiry)) newErrors.expiry = 'Invalid expiry (MM/YY)';
+        if (cardDetails.cvc.length !== 3) newErrors.cvc = 'Invalid CVC';
+        if (!cardDetails.name) newErrors.name = 'Cardholder name is required';
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
     // Handlers
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, section: 'shipping' | 'card') => {
         const { name, value } = e.target;
@@ -57,22 +81,34 @@ export const Cart: React.FC<CartProps> = ({ cart, updateQuantity, removeFromCart
                 setCardDetails(prev => ({ ...prev, [name]: value }));
             }
         }
+        // Clear error when user types
+        if (errors[name]) {
+            setErrors(prev => {
+                const newErrors = { ...prev };
+                delete newErrors[name];
+                return newErrors;
+            });
+        }
     };
 
     const proceedToPayment = (e: React.FormEvent) => {
         e.preventDefault();
-        setCheckoutStep('payment');
+        if (validateShipping()) {
+            setCheckoutStep('payment');
+        }
     };
 
     const handlePayment = (e: React.FormEvent) => {
         e.preventDefault();
-        setCheckoutStep('processing');
+        if (validatePayment()) {
+            setCheckoutStep('processing');
 
-        // Simulate API call
-        setTimeout(() => {
-            setCheckoutStep('success');
-            clearCart();
-        }, 2500);
+            // Simulate API call
+            setTimeout(() => {
+                setCheckoutStep('success');
+                clearCart();
+            }, 2500);
+        }
     };
 
     const closeCheckout = () => {
@@ -273,28 +309,33 @@ export const Cart: React.FC<CartProps> = ({ cart, updateQuantity, removeFromCart
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                             <div className="space-y-1">
                                                 <label className={labelClasses}>First Name</label>
-                                                <input required type="text" name="fullName" value={shippingDetails.fullName} onChange={(e) => handleInputChange(e, 'shipping')} className={inputClasses} placeholder="Jane Doe" />
+                                                <input required type="text" name="fullName" value={shippingDetails.fullName} onChange={(e) => handleInputChange(e, 'shipping')} className={`${inputClasses} ${errors.fullName ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`} placeholder="Jane Doe" />
+                                                {errors.fullName && <p className="text-red-500 text-xs mt-1">{errors.fullName}</p>}
                                             </div>
                                             <div className="space-y-1">
                                                 <label className={labelClasses}>Email Address</label>
-                                                <input required type="email" name="email" value={shippingDetails.email} onChange={(e) => handleInputChange(e, 'shipping')} className={inputClasses} placeholder="jane@example.com" />
+                                                <input required type="email" name="email" value={shippingDetails.email} onChange={(e) => handleInputChange(e, 'shipping')} className={`${inputClasses} ${errors.email ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`} placeholder="jane@example.com" />
+                                                {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
                                             </div>
                                         </div>
                                         <div className="space-y-1">
                                             <label className={labelClasses}>Address</label>
                                             <div className="relative">
                                                 <MapPin className="absolute left-3 top-3 text-gray-400" size={18} />
-                                                <input required type="text" name="address" value={shippingDetails.address} onChange={(e) => handleInputChange(e, 'shipping')} className={`${inputClasses} pl-10`} placeholder="123 Organic Lane" />
+                                                <input required type="text" name="address" value={shippingDetails.address} onChange={(e) => handleInputChange(e, 'shipping')} className={`${inputClasses} pl-10 ${errors.address ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`} placeholder="123 Organic Lane" />
                                             </div>
+                                            {errors.address && <p className="text-red-500 text-xs mt-1">{errors.address}</p>}
                                         </div>
                                         <div className="grid grid-cols-2 gap-5">
                                             <div className="space-y-1">
                                                 <label className={labelClasses}>City</label>
-                                                <input required type="text" name="city" value={shippingDetails.city} onChange={(e) => handleInputChange(e, 'shipping')} className={inputClasses} placeholder="Dubai" />
+                                                <input required type="text" name="city" value={shippingDetails.city} onChange={(e) => handleInputChange(e, 'shipping')} className={`${inputClasses} ${errors.city ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`} placeholder="Dubai" />
+                                                {errors.city && <p className="text-red-500 text-xs mt-1">{errors.city}</p>}
                                             </div>
                                             <div className="space-y-1">
                                                 <label className={labelClasses}>ZIP Code</label>
-                                                <input required type="text" name="zip" value={shippingDetails.zip} onChange={(e) => handleInputChange(e, 'shipping')} className={inputClasses} placeholder="00000" />
+                                                <input required type="text" name="zip" value={shippingDetails.zip} onChange={(e) => handleInputChange(e, 'shipping')} className={`${inputClasses} ${errors.zip ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`} placeholder="00000" />
+                                                {errors.zip && <p className="text-red-500 text-xs mt-1">{errors.zip}</p>}
                                             </div>
                                         </div>
                                         <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 flex gap-3 items-start">
@@ -346,25 +387,29 @@ export const Cart: React.FC<CartProps> = ({ cart, updateQuantity, removeFromCart
                                                 <label className={labelClasses}>Card Number</label>
                                                 <div className="relative">
                                                     <CreditCard className="absolute left-3 top-3 text-gray-400" size={18} />
-                                                    <input required type="text" name="number" value={cardDetails.number} onChange={(e) => handleInputChange(e, 'card')} maxLength={19} className={`${inputClasses} pl-10 font-mono`} placeholder="0000 0000 0000 0000" />
+                                                    <input required type="text" name="number" value={cardDetails.number} onChange={(e) => handleInputChange(e, 'card')} maxLength={19} className={`${inputClasses} pl-10 font-mono ${errors.number ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`} placeholder="0000 0000 0000 0000" />
                                                 </div>
+                                                {errors.number && <p className="text-red-500 text-xs mt-1">{errors.number}</p>}
                                             </div>
                                             <div className="grid grid-cols-2 gap-5">
                                                 <div className="space-y-1">
                                                     <label className={labelClasses}>Expiry Date</label>
-                                                    <input required type="text" name="expiry" value={cardDetails.expiry} onChange={(e) => handleInputChange(e, 'card')} maxLength={5} className={inputClasses} placeholder="MM/YY" />
+                                                    <input required type="text" name="expiry" value={cardDetails.expiry} onChange={(e) => handleInputChange(e, 'card')} maxLength={5} className={`${inputClasses} ${errors.expiry ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`} placeholder="MM/YY" />
+                                                    {errors.expiry && <p className="text-red-500 text-xs mt-1">{errors.expiry}</p>}
                                                 </div>
                                                 <div className="space-y-1">
                                                     <label className={labelClasses}>CVC / CVV</label>
                                                     <div className="relative">
                                                         <Lock className="absolute left-3 top-3 text-gray-400" size={16} />
-                                                        <input required type="password" name="cvc" value={cardDetails.cvc} onChange={(e) => handleInputChange(e, 'card')} maxLength={3} className={`${inputClasses} pl-10`} placeholder="123" />
+                                                        <input required type="password" name="cvc" value={cardDetails.cvc} onChange={(e) => handleInputChange(e, 'card')} maxLength={3} className={`${inputClasses} pl-10 ${errors.cvc ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`} placeholder="123" />
                                                     </div>
+                                                    {errors.cvc && <p className="text-red-500 text-xs mt-1">{errors.cvc}</p>}
                                                 </div>
                                             </div>
                                             <div className="space-y-1">
                                                 <label className={labelClasses}>Cardholder Name</label>
-                                                <input required type="text" name="name" value={cardDetails.name} onChange={(e) => handleInputChange(e, 'card')} className={inputClasses} placeholder="NAME ON CARD" />
+                                                <input required type="text" name="name" value={cardDetails.name} onChange={(e) => handleInputChange(e, 'card')} className={`${inputClasses} ${errors.name ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`} placeholder="NAME ON CARD" />
+                                                {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
                                             </div>
                                         </div>
                                     </form>
