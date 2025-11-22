@@ -89,7 +89,7 @@ Follow these steps to set up the project locally.
 
 4.  **Run the application**
     ```bash
-    npm start
+    npm run dev
     ```
     The app will launch at `http://localhost:3000`.
 
