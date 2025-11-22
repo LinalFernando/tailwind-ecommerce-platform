@@ -105,7 +105,7 @@ const Navbar: React.FC<NavbarProps> = ({ cartCount }) => {
                   </span>
                 )}
               </div>
-              <span className="text-sm font-bold tracking-widest uppercase font-opensans">Cart</span>
+              <span className="text-sm font-bold tracking-wider uppercase font-opensans">Cart</span>
             </Link>
 
             {/* Mobile menu button */}
