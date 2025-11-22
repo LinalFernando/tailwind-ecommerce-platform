@@ -141,5 +141,5 @@ Distributed under the MIT License. See LICENSE for more information.
 
 
 <div align="center">
-<p>Made with 💚 by Linal Fernando</p>
+<p>--- Developed by Linal Fernando ---</p>
 </div>
