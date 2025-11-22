@@ -11,7 +11,7 @@
     <a href="#-features">Features</a> •
     <a href="#-tech-stack">Tech Stack</a> •
     <a href="#-getting-started">Getting Started</a> •
-    <a href="#-ai-implementation">AI Architecture</a> •
+    <a href="#-ai-implementation-details">AI Architecture</a> •
     <a href="#-license">License</a>
   </p>
 
