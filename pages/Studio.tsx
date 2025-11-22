@@ -20,7 +20,7 @@ const Studio: React.FC = () => {
       setGeneratedImage(result);
     } catch (error) {
       console.error(error);
-      alert("Failed to generate image. Please try again.");
+      alert(error instanceof Error ? error.message : "Failed to generate image. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -53,17 +53,16 @@ const Studio: React.FC = () => {
                 <label className="block text-sm font-bold text-gray-700 mb-2">Aspect Ratio</label>
                 <div className="grid grid-cols-2 gap-3">
                   {Object.entries(ImageAspectRatio).map(([key, value]) => {
-                     if (key === 'WIDE' && value === '16:9') return null; // De-dupe
-                     return (
+                    if (key === 'WIDE' && value === '16:9') return null; // De-dupe
+                    return (
                       <button
                         key={key}
                         type="button"
                         onClick={() => setAspectRatio(value as ImageAspectRatio)}
-                        className={`py-3 px-3 text-sm border rounded-xl transition-all duration-200 font-medium ${
-                          aspectRatio === value
+                        className={`py-3 px-3 text-sm border rounded-xl transition-all duration-200 font-medium ${aspectRatio === value
                             ? 'bg-heritage-green text-white border-heritage-green shadow-md scale-105'
                             : 'bg-white text-gray-600 hover:bg-gray-50 border-gray-200 hover:border-gray-300'
-                        }`}
+                          }`}
                       >
                         {value} ({key})
                       </button>
@@ -93,31 +92,31 @@ const Studio: React.FC = () => {
               </div>
             ) : generatedImage ? (
               <div className="w-full h-full flex flex-col items-center animate-popIn">
-                <img 
-                  src={generatedImage} 
-                  alt="Generated" 
-                  className="rounded-lg shadow-md max-h-[500px] object-contain mb-4" 
+                <img
+                  src={generatedImage}
+                  alt="Generated"
+                  className="rounded-lg shadow-md max-h-[500px] object-contain mb-4"
                 />
                 <div className="flex gap-4">
-                    <a 
-                      href={generatedImage} 
-                      download={`heritage-generated-${Date.now()}.jpg`}
-                      className="flex items-center gap-2 px-6 py-3 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-700 rounded-xl transition-all font-bold hover:shadow-md"
-                    >
-                      <Download size={18} /> Download
-                    </a>
-                    <button 
-                       onClick={() => setGeneratedImage(null)}
-                       className="text-sm text-gray-500 hover:text-red-500 underline transition-colors"
-                    >
-                        Clear
-                    </button>
+                  <a
+                    href={generatedImage}
+                    download={`heritage-generated-${Date.now()}.jpg`}
+                    className="flex items-center gap-2 px-6 py-3 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-700 rounded-xl transition-all font-bold hover:shadow-md"
+                  >
+                    <Download size={18} /> Download
+                  </a>
+                  <button
+                    onClick={() => setGeneratedImage(null)}
+                    className="text-sm text-gray-500 hover:text-red-500 underline transition-colors"
+                  >
+                    Clear
+                  </button>
                 </div>
               </div>
             ) : (
               <div className="text-center text-gray-300 animate-fadeIn">
                 <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <ImageIcon size={40} className="opacity-50" />
+                  <ImageIcon size={40} className="opacity-50" />
                 </div>
                 <p className="text-xl font-serif font-bold text-gray-400">Image preview will appear here</p>
                 <p className="text-sm mt-2">Enter a prompt to start creating</p>
